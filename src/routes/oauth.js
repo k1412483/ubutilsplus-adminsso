@@ -60,4 +60,23 @@ router.get('/github/callback',
     }
 );
 
+// Microsoft OAuth
+router.get('/microsoft', checkProjectBlockedAndRedirect, passport.authenticate('microsoft', { prompt: 'select_account' }));
+
+router.get('/microsoft/callback',
+    passport.authenticate('microsoft', { failureRedirect: '/auth/failure' }),
+    async (req, res) => {
+        try {
+            const token = await storeUserData(req.user);
+            res.send(`<script>
+                window.opener.postMessage({type: 'AUTH_SUCCESS', token: '${token}'}, '*');
+                window.close();
+            </script>`);
+        } catch (error) {
+            console.error('Microsoft auth error:', error);
+            res.redirect('/auth/failure');
+        }
+    }
+);
+
 module.exports = router;
