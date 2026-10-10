@@ -61,7 +61,7 @@ router.get('/github/callback',
 );
 
 // Microsoft OAuth
-router.get('/microsoft', checkProjectBlockedAndRedirect, passport.authenticate('microsoft', { prompt: 'select_account' }));
+router.get('/microsoft', passport.authenticate('microsoft', { prompt: 'select_account' }));
 
 router.get('/microsoft/callback',
     passport.authenticate('microsoft', { failureRedirect: '/auth/failure' }),
